@@ -1,0 +1,39 @@
+x-apm_env: &base_env
+  SERVER_HOST: 0.0.0.0
+  SERVER_PORT: 8000
+  DATABASE_HOST: db
+  DATABASE_PORT: 5432
+
+  POSTGRES_DB: hmm
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+
+services:
+  db:
+    image: postgres:14
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    ports:  # TODO: need to remove in prod
+      - 5432:5432
+    environment:
+      <<: *base_env
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  hmm-server:
+    image: gitlab.hexteam.tech:5050/dev/lime/lime-hmm:dev
+    restart: always
+    build:
+      context: .
+    environment:
+      <<: *base_env
+    ports:
+      - 8020:8000
+    command: bash -c "poetry run python3 main.py"
+    volumes:
+      - ./logs:/usr/src/app/logs

@@ -1,0 +1,13 @@
+.idea/*
+lib/*
+venv/*
+.env
+.vscode
+__pycache__/
+media/
+internal_media
+TODO.md
+out
+logs
+test.curl
+db

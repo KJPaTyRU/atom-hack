@@ -1,0 +1,61 @@
+[tool.poetry]
+name = "lime-license"
+version = "1.0.0"
+description = ""
+authors = ["blank <blank@any.blank>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.10.6"
+pydantic-settings = "^2.8.1"
+uvicorn = "^0.34.0"
+loguru = "^0.7.3"
+fastapi = "^0.115.11"
+python-jose = "^3.4.0"
+oauthlib = "^3.2.2"
+cryptography = "^44.0.2"
+sqlalchemy = "^2.0.39"
+alembic = "^1.15.1"
+passlib = "^1.7.4"
+bcrypt = "^4.3.0"
+asyncpg = "^0.30.0"
+python-multipart = "^0.0.20"
+pre-commit = "^4.2.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.2"
+pre-commit = "^4.1.0"
+black = "^25.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 79
+skip_magic_trailing_comma = true
+target-version = ['py310']
+include = '\.pyi?$'
+
+[tool.pyright]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    "logs",
+    "**/.*"
+]
+autoFormatStrings = true
+autoImportCompletions = true
+enableSyncServer = true
+diagnosticSeverityOverrides = {reportInvalidTypeForm = "warning"}
+indexing = true
+completeFunctionParens = true
+reportAttributeAccessIssue = "none"
+reportOptionalMemberAccess = "none"
+reportArgumentType = "warning"
+reportReturnType = "warning"
+reportCallIssue = "none"
+reportAssignmentType = "warning"
