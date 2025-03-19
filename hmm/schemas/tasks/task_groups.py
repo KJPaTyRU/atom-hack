@@ -1,5 +1,4 @@
 import uuid
-from pydantic import Field
 from hmm.schemas.base import OrmModel
 
 

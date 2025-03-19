@@ -60,3 +60,8 @@ class NotASuperUserException(BaseArgsRestException):
 class RegistrationError(BaseArgsRestException):
     message = "Registration error"
     status = 400
+
+
+class BadCsvFileError(BaseArgsRestException):
+    message = "BadCsvFileError"
+    status = 422

@@ -26,6 +26,7 @@ from hmm.schemas.tasks.subtask_tasks import (
     TypicalSubTaskCreate,
     TypicalSubTaskFrontRead,
 )
+from hmm.usecase.services.grimuar_extractors.csv import CSVGrimuarExtractor
 
 router = APIRouter(
     prefix="/tasks", dependencies=[Depends(authenticate_user)], tags=["Tasks"]
@@ -67,6 +68,16 @@ async def post_sub_task(
     res = await crud.create(session, obj_in=data)
     await session.commit()
     return res
+
+
+@router.post("/grimuar", status_code=204)
+async def post_grimuar(
+    data: CSVGrimuarExtractor = Depends(CSVGrimuarExtractor.from_body),
+    session: AsyncSession = Depends(get_session),
+    crud: TypicalSubTaskCrud = Depends(get_typical_task_crud),
+):
+    await crud.bulk_create(session, data.data)
+    await session.commit()
 
 
 # group
