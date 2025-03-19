@@ -27,7 +27,7 @@ def get_Task2Group() -> type["Task2Group"]:
 
 class TaskGroupCrud(CRUDBase[TaskGroup, TaskGroupFrontRead, TaskGroupCreate]):
 
-    async def create_with_tasks(
+    async def extended_create(
         self, session: AsyncSession, data: TaskGroupFrontCreate
     ) -> TaskGroup:
         res = await self.create(session, obj_in=data.to_db())

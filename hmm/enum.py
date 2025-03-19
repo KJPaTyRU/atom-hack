@@ -12,3 +12,9 @@ class HeroCategory(EnumDescriptionMixin, IntEnum):
 class SubTaskType(EnumDescriptionMixin, IntEnum):
     creation = 1
     updation = 2
+
+
+class ExpeditionStatus(EnumDescriptionMixin, IntEnum):
+    created = 1
+    error = 2
+    finished = 3

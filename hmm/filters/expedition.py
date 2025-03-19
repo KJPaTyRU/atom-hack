@@ -11,6 +11,18 @@ class ExpeditionTemplateFilter(Filter):
     name__ilike: str | None = None
     description__ilike: str | None = None
 
+    date_start__from: datetime | None = None
+    date_start__till: datetime | None = None
+
+    date_end__from: datetime | None = None
+    date_end__till: datetime | None = None
+
     class Constants(Filter.Constants):
         model = ExpeditionTemplate
-        search_model_fields = ["created_at", "name", "description"]
+        search_model_fields = [
+            "created_at",
+            "name",
+            "description",
+            "date_start",
+            "date_end",
+        ]

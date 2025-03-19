@@ -15,9 +15,8 @@ from hmm.crud.expedition import (
 from hmm.filters.expedition import ExpeditionTemplateFilter
 from hmm.models.expedition import ExpeditionTemplate
 from hmm.router.base import base_model_get
+from hmm.schemas.auth import UserSession
 from hmm.schemas.expedition import (
-    ChroniclesFrontCreate,
-    ChroniclesFrontRead,
     ExpeditionTemplateFrontCreate,
     ExpeditionTemplateFrontRead,
 )
@@ -68,19 +67,9 @@ async def post_expedition(
     ex_crud: ExtendedExpeditionTemplateCrud = Depends(
         get_extended_expedition_template_crud
     ),
+    user: UserSession = Depends(authenticate_user),
 ) -> ExpeditionTemplateFrontRead:
-    res = await crud.create_with_tasks(session, data)
+    res = await crud.extended_create(session, data.to_db(user.id))
     await session.commit()
     fin = await ex_crud.get_one(session, id=res.id)
     return fin
-
-
-# Chronicles
-@router.get("/chronics")
-async def get_chronics() -> list[ChroniclesFrontRead]:
-    pass
-
-
-@router.post("/chronics")
-async def post_chronic(data: ChroniclesFrontCreate) -> ChroniclesFrontRead:
-    pass
