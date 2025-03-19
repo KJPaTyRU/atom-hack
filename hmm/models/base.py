@@ -168,7 +168,7 @@ class BoundDbModel:
 
     @classmethod
     @abstractmethod
-    def bound_date_column(cls) -> Column:
+    def bound_date_column(cls) -> Column | Any:
         raise NotImplementedError()
 
     @classmethod
