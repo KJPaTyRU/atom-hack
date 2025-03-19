@@ -56,7 +56,7 @@ class ExtendedExpeditionTemplateCrud(ExpeditionTemplateCrud):
     @property
     def _select_model(self):
         return super()._select_model.options(
-            selectinload(self._model.tasks).selectinload(TaskGroup.sub_task)
+            selectinload(self.model.tasks).selectinload(TaskGroup.sub_task)
         )
 
 

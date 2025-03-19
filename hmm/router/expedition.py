@@ -47,7 +47,7 @@ async def get_expedition_templates(
     ),
     ordering: Ordering = OrderDepends(Ordering(ExpeditionTemplate)),
 ) -> list[ExpeditionTemplateFrontRead]:
-    return await base_model_get(
+    res = await base_model_get(
         response,
         session,
         crud,
@@ -57,19 +57,21 @@ async def get_expedition_templates(
         crud._select_model,
         ExpeditionTemplateFrontRead,
     )
+    return res
 
 
 @router.post("/expedition")
 async def post_expedition(
     data: ExpeditionTemplateFrontCreate,
+    crud: ExpeditionTemplateCrud = Depends(get_expedition_template_crud),
     session: AsyncSession = Depends(get_session),
-    crud: ExtendedExpeditionTemplateCrud = Depends(
+    ex_crud: ExtendedExpeditionTemplateCrud = Depends(
         get_extended_expedition_template_crud
     ),
 ) -> ExpeditionTemplateFrontRead:
     res = await crud.create_with_tasks(session, data)
     await session.commit()
-    fin = await crud.get_one(session, id=res.id)
+    fin = await ex_crud.get_one(session, id=res.id)
     return fin
 
 
