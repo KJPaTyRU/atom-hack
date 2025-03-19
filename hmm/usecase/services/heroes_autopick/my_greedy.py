@@ -85,18 +85,18 @@ def assign_heroes(
     if manas.w_mana > 0:
         w_heroes = pick_heroes(manas.w_mana, gheroes[HeroCategory.warrior])
         if not w_heroes:
-            return PickResult([], manas=manas)
+            return PickResult(heroes=[], manas=manas)
 
     if manas.m_mana > 0:
         m_heroes = pick_heroes(manas.m_mana, gheroes[HeroCategory.magician])
 
         if not m_heroes:
-            return PickResult([], manas=manas)
+            return PickResult(heroes=[], manas=manas)
 
     if manas.s_mana > 0:
         s_heroes = pick_heroes(manas.s_mana, gheroes[HeroCategory.strategist])
         if not s_heroes:
-            return PickResult([], manas=manas)
+            return PickResult(heroes=[], manas=manas)
     return PickResult(heroes=w_heroes + m_heroes + s_heroes, manas=manas)
 
 
