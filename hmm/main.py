@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from loguru import logger
 
+from hmm.core.middleware import default_catch_exception
 from hmm.router import router
 from hmm.config import get_settings
 from hmm.core.swagger.swagger import add_custom_swagger, init_swagger_routes
@@ -35,5 +36,5 @@ def create_app():
 
     # * Routes * #
     main_app.include_router(router)
-
+    default_catch_exception(main_app)
     return main_app

@@ -1,7 +1,7 @@
 import datetime
 from typing import Annotated
 
-from pydantic import Field, StringConstraints, computed_field
+from pydantic import Field, StringConstraints, computed_field, model_validator
 from hmm.schemas.base import CreatedTimeSchemaMixin, OrmModel
 from hmm.core.crypto import get_hashed_password, verify_password
 
@@ -73,6 +73,26 @@ class User(UserRawCreate):
 
 class UserFront(User, CreatedTimeSchemaMixin):
     pass
+
+
+class UserFronCreate(OrmModel):
+    username: UserNameStr
+    password1: SecPasswordStr
+    password2: SecPasswordStr
+
+    @model_validator(mode="after")
+    def val_model(self):
+        if (
+            not self.password1
+            or not self.password2
+            or self.password1 != self.password2
+        ):
+            raise ValueError("password1 != password2")
+
+        return self
+
+    def to_db_schema(self) -> UserCreate:
+        return UserCreate(username=self.username, password=self.password1)
 
 
 class UserSession(UserFront):

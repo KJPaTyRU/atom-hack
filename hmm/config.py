@@ -2,7 +2,7 @@ import base64
 
 import random
 import sys
-from functools import cache
+from functools import cache, cached_property
 from pathlib import Path
 from typing import Literal
 
@@ -97,6 +97,10 @@ class Logging(BaseSettings):
     @property
     def is_debug(self) -> bool:
         return self.level == "DEBUG"
+
+    @cached_property
+    def logger_error_func(self):
+        return logger.exception
 
     class Config:
         env_prefix = "log_"

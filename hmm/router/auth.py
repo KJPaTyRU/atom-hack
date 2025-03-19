@@ -18,7 +18,13 @@ from hmm.core.db import get_session
 from hmm.filters.user import UserFilter
 from hmm.models.auth import User
 from hmm.router.base import base_model_get
-from hmm.schemas.auth import UpdateUser, UserFront, UserPatchMe, UserRead
+from hmm.schemas.auth import (
+    UpdateUser,
+    UserFronCreate,
+    UserFront,
+    UserPatchMe,
+    UserRead,
+)
 from hmm.core.filtering.base import FilterDepends
 from hmm.core.ordering import Ordering
 from hmm.core.paginator import Paginator, default_paginator
@@ -67,6 +73,17 @@ async def get_logout(
 ):
     await manager.logout(session, user)
     manager.schema.logout(response)
+
+
+@auth_router.post("/registration")
+async def post_registration(
+    data: UserFronCreate,
+    session: AsyncSession = Depends(get_session),
+    crud: UserCrud = Depends(get_user_crud),
+) -> UserFront:
+    user = await crud.create(session, obj_in=data.to_db_schema())
+    await session.commit()
+    return user
 
 
 @sup_sec_router.get("")
