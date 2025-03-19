@@ -113,3 +113,16 @@ async def post_group(
     await session.commit()
     fin = await ex_crud.get_one(session, id=res.id)
     return fin
+
+
+@router.post("/groups", deprecated=True)
+async def post_groups(
+    data: list[TaskGroupFrontCreate],
+    session: AsyncSession = Depends(get_session),
+    crud: TaskGroupCrud = Depends(get_group_crud),
+    ex_crud: ExtendedTaskGroupCrud = Depends(get_extended_group_crud),
+) -> TaskGroupFrontRead:
+    res: TaskGroup = await crud.extended_create(session, data)
+    await session.commit()
+    fin = await ex_crud.get_one(session, id=res.id)
+    return fin

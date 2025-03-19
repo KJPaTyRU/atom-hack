@@ -5,7 +5,10 @@ from hmm.schemas.base import (
     OrmModel,
     UuidIdSchemaMixin,
 )
-from hmm.schemas.tasks.subtask_tasks import TypicalSubTaskFrontRead
+from hmm.schemas.tasks.subtask_tasks import (
+    TypicalSubTaskCreate,
+    TypicalSubTaskFrontRead,
+)
 
 # from hmm.schemas.tasks.subtask_tasks import TypicalSubTaskCreate
 
@@ -22,6 +25,15 @@ class TaskGroupCreate(BaseTaskGroupFields):
 
 class TaskGroupFrontCreate(BaseTaskGroupFields):
     sub_task: list[uuid.UUID] = Field(default_factory=list, min_length=1)
+
+    def to_db(self, **kwargs) -> TaskGroupCreate:
+        return TaskGroupCreate.model_validate(self)
+
+
+class TaskGroupFrontFullCreate(BaseTaskGroupFields):
+    sub_task: list[TypicalSubTaskCreate] = Field(
+        default_factory=list, min_length=1
+    )
 
     def to_db(self, **kwargs) -> TaskGroupCreate:
         return TaskGroupCreate.model_validate(self)

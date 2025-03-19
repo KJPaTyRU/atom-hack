@@ -40,6 +40,14 @@ class TaskGroupCrud(CRUDBase[TaskGroup, TaskGroupFrontRead, TaskGroupCreate]):
         await session.execute(ins_stmt)
         return res
 
+    async def extended_create_many(
+        self, session: AsyncSession, data: list[TaskGroupFrontCreate]
+    ) -> list[TaskGroup]:
+        ret: list[TaskGroup] = []
+        for di in data:
+            ret.append(await self.extended_create(session, di))
+        return ret
+
 
 class ExtendedTaskGroupCrud(
     CRUDBase[TaskGroup, TaskGroupFrontRead, TaskGroupCreate]

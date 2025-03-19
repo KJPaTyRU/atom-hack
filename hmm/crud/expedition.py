@@ -1,10 +1,11 @@
 from functools import cache
 from typing import TYPE_CHECKING
 import uuid
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.orm import selectinload, joinedload
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from hmm.enum import ExpeditionStatus
 from hmm.models.expedition import ExpeditionTemplate
 from hmm.crud.base import CRUDBase
 from hmm.models.tasks.group import TaskGroup
@@ -34,6 +35,13 @@ def get_Heroes2Expedition() -> "Heroes2Expedition":
     return Heroes2Expedition
 
 
+def flatten_tasks(obj: ExpeditionTemplate):
+    ret = []
+    for tgi in obj.tasks:
+        ret.extend(tgi.sub_task)
+    return ret
+
+
 class ExpeditionTemplateCrud(
     CRUDBase[
         ExpeditionTemplate,
@@ -57,10 +65,10 @@ class ExpeditionTemplateCrud(
         await session.execute(ins_stmt)
 
     async def insert_heroes(
-        self, session: AsyncSession, tasks: list[uuid.UUID], to_: uuid.UUID
+        self, session: AsyncSession, heroes: list[uuid.UUID], to_: uuid.UUID
     ):
         t2g = []
-        for ti in tasks:
+        for ti in heroes:
             t2g.append(
                 Heroes2ExpeditionRead(
                     hero_id=ti, expedition_id=to_
@@ -78,6 +86,28 @@ class ExpeditionTemplateCrud(
         await self.insert_tasks(session, data.tasks, res.id)
         # await self.insert_heroes(session, data.tasks, res.id)
         return res
+
+    async def set_status(
+        self, session: AsyncSession, to_: uuid.UUID, status: ExpeditionStatus
+    ):
+        await self.update(
+            session,
+            update_filter=dict(id=to_),
+            update_values=dict(status=status),
+        )
+
+    async def get_subtasks(self, session: AsyncSession, to_: uuid.UUID):
+        stmt = (
+            select(ExpeditionTemplate)
+            .options(
+                selectinload(ExpeditionTemplate.tasks).selectinload(
+                    TaskGroup.sub_task
+                )
+            )
+            .where(ExpeditionTemplate.id == to_)
+        )
+        res = (await session.execute(stmt)).scalar_one()
+        return flatten_tasks(res)
 
 
 class ExtendedExpeditionTemplateCrud(ExpeditionTemplateCrud):

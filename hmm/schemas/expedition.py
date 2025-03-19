@@ -10,7 +10,7 @@ from hmm.schemas.base import (
     UuidIdSchemaMixin,
 )
 from hmm.schemas.hero import HeroFrontRead
-from hmm.schemas.tasks.group import TaskGroupFrontRead
+from hmm.schemas.tasks.group import TaskGroupFrontCreate, TaskGroupFrontRead
 
 
 # * ExpeditionTemplate * #
@@ -57,6 +57,22 @@ class ExpeditionTemplateFrontCreate(BaseExpeditionTemplateFields):
     def to_db(self, author_id: int, **kwargs) -> ExpeditionTemplateCreate:
         data = self.model_dump()
         data["author_id"] = author_id
+        return ExpeditionTemplateCreate(**data)
+
+
+class ExpeditionTemplateFrontFullCreate(BaseExpeditionTemplateFields):
+    tasks: list[TaskGroupFrontCreate] = Field(
+        description="Список задач в шаблоне экспедиции",
+        default_factory=list,
+        min_length=1,
+    )
+
+    def to_db(
+        self, author_id: int, tasks_ids: list[uuid.UUID], **kwargs
+    ) -> ExpeditionTemplateCreate:
+        data = self.model_dump()
+        data["author_id"] = author_id
+        data["tasks"] = tasks_ids
         return ExpeditionTemplateCreate(**data)
 
 

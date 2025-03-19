@@ -65,3 +65,8 @@ class RegistrationError(BaseArgsRestException):
 class BadCsvFileError(BaseArgsRestException):
     message = "BadCsvFileError"
     status = 422
+
+
+class GroupCreationErrorError(BaseArgsRestException):
+    message = "GroupCreationErrorError"
+    status = 403
