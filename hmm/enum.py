@@ -9,6 +9,6 @@ class HeroCategory(EnumDescriptionMixin, IntEnum):
     strategist = 3
 
 
-class TypicalSubTaskType(EnumDescriptionMixin, IntEnum):
+class SubTaskType(EnumDescriptionMixin, IntEnum):
     creation = 1
     updation = 2

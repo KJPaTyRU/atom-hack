@@ -3,7 +3,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from hmm.models.base import Base, DateCreatedMixin, BoundDbModel
 from hmm.models.tasks.group import TaskGroup
-from hmm.models.tasks.typical_tasks import TypicalSubTask
+from hmm.models.tasks.subtask_tasks import TypicalSubTask
 
 
 class Task2Group(BoundDbModel, DateCreatedMixin, Base):

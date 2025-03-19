@@ -49,6 +49,8 @@ class Chronicles(BoundDbModel, UUIDDateCreatedMixin, Base):
         ForeignKey(ExpeditionTemplate.id, ondelete="CASCADE"), index=True
     )
 
+    # author_id: Mapped[int] = ...
+
     # Relationship
     expedition: Mapped[ExpeditionTemplate] = relationship(ExpeditionTemplate)
     heroies: Mapped[list["Hero"]] = ...
@@ -81,16 +83,16 @@ class Task2Expedition(BoundDbModel, DateCreatedMixin, Base):
 
 
 ExpeditionTemplate.tasks = relationship(
-    "TypicalSubTask",
-    secondary=Task2Expedition,
-    secondaryjoin=Task2Expedition.expedition_id == ExpeditionTemplate.id,
+    "TaskGroup",
+    secondary=Task2Expedition.__tablename__,
+    # secondaryjoin=Task2Expedition.expedition_id == ExpeditionTemplate.id,
     uselist=True,
 )
 
 
 Chronicles.heroies = relationship(
-    "TypicalSubTask",
-    secondary=Heroes2Chronicles,
-    secondaryjoin=Heroes2Chronicles.chronicle_id == Chronicles.id,
+    "Hero",
+    secondary=Heroes2Chronicles.__tablename__,
+    # secondaryjoin=Heroes2Chronicles.chronicle_id == Chronicles.id,
     uselist=True,
 )

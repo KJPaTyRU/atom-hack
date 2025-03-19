@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from hmm.models.base import Base, UUIDDateCreatedMixin, BoundDbModel
 
 if TYPE_CHECKING:
-    from hmm.models.tasks.typical_tasks import TypicalSubTask
+    from hmm.models.tasks.subtask_tasks import TypicalSubTask
     from hmm.models.tasks.task_group import Task2Group
 
 
@@ -28,7 +28,8 @@ class TaskGroup(BoundDbModel, UUIDDateCreatedMixin, Base):
 
 TaskGroup.sub_task = relationship(
     "TypicalSubTask",
-    secondary=get_Task2Group(),
-    secondaryjoin=get_Task2Group().group_id == TaskGroup.id,
+    secondary=get_Task2Group().__tablename__,
+    # primaryjoin=get_Task2Group().group_id == TaskGroup.id,
+    # secondaryjoin=get_Task2Group().group_id == TaskGroup.id,
     uselist=True,
 )

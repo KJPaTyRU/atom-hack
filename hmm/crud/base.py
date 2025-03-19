@@ -184,6 +184,7 @@ class CRUDBase(Generic[ModelType, GetSchemaType, CreateSchemaType]):
                 operator_expressions, **filter_dict
             )
         )
+        loguru.logger.debug(f"{str(stmt)=}")
         return (await session.execute(stmt)).scalars().one()
 
     @map_to_schema_result
