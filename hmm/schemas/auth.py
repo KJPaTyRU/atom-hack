@@ -66,6 +66,11 @@ class UserRead(CreatedTimeSchemaMixin):
     username: UserNameStr
 
 
+class UserRoledRead(UserRead):
+    is_super: bool
+    is_active: bool
+
+
 class User(UserRawCreate):
     id: int
     hashed_password: str = Field(exclude=True)

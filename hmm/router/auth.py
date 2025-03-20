@@ -24,6 +24,7 @@ from hmm.schemas.auth import (
     UserFront,
     UserPatchMe,
     UserRead,
+    UserRoledRead,
 )
 from hmm.core.filtering.base import FilterDepends
 from hmm.core.ordering import Ordering
@@ -130,8 +131,10 @@ async def user_patch(
 
 
 @sec_router.get("/me")
-async def get_me(user: UserSession = Depends(authenticate_user)) -> UserRead:
-    return UserRead.model_validate(user)
+async def get_me(
+    user: UserSession = Depends(authenticate_user),
+) -> UserRoledRead:
+    return UserRoledRead.model_validate(user)
 
 
 @sec_router.patch("/me")

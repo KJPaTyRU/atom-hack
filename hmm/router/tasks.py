@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from hmm.core.auth.auth import authenticate_user
+from hmm.core.auth.auth import authenticate_superuser, authenticate_user
 from hmm.core.db import get_session
 from hmm.core.filtering.base import FilterDepends
 from hmm.core.ordering import OrderDepends, Ordering
@@ -38,7 +38,7 @@ def get_router() -> APIRouter:
 
 
 # sub-task
-@router.get("/sub-task")
+@router.get("/sub-task", dependencies=[Depends(authenticate_superuser)])
 async def get_sub_task(
     response: Response,
     session: AsyncSession = Depends(get_session),
@@ -59,7 +59,7 @@ async def get_sub_task(
     )
 
 
-@router.post("/sub-task")
+@router.post("/sub-task", dependencies=[Depends(authenticate_superuser)])
 async def post_sub_task(
     data: TypicalSubTaskCreate,
     session: AsyncSession = Depends(get_session),
@@ -70,7 +70,9 @@ async def post_sub_task(
     return res
 
 
-@router.post("/grimuar", status_code=204)
+@router.post(
+    "/grimuar", status_code=204, dependencies=[Depends(authenticate_superuser)]
+)
 async def post_grimuar(
     data: CSVGrimuarExtractor = Depends(CSVGrimuarExtractor.from_body),
     session: AsyncSession = Depends(get_session),
