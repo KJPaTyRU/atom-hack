@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from hmm.config import get_settings
-from hmm.exceptions import BaseRestException
+from hmm.core.exceptions import BaseArgsRestException
 
 _ERROR_FUNC = get_settings().logging.logger_error_func
 
@@ -22,9 +22,9 @@ def default_catch_exception(app: FastAPI):
             headers={"Content-Type": "application/json"},
         )
 
-    @app.exception_handler(BaseRestException)
+    @app.exception_handler(BaseArgsRestException)
     async def arg_rest_exception_handler(
-        request: Request, exc: BaseRestException
+        request: Request, exc: BaseArgsRestException
     ):
         _ERROR_FUNC(
             "{} | {} | {}", exc.__class__.__name__, exc.status, exc.details

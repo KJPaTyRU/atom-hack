@@ -38,7 +38,7 @@ def get_router() -> APIRouter:
 
 
 # sub-task
-@router.get("/sub-task", dependencies=[Depends(authenticate_superuser)])
+@router.get("/sub-task")
 async def get_sub_task(
     response: Response,
     session: AsyncSession = Depends(get_session),
