@@ -19,6 +19,7 @@ class ExpeditionDetails(OrmModel):
     m_mana: ManaFloatType = 0
     s_mana: ManaFloatType = 0
     total_mana: ManaFloatType = 0
+    mean_exp_lvl: float = Field(1, ge=1, le=3)
 
 
 class BaseExpeditionTemplateFields(OrmModel):

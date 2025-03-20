@@ -67,6 +67,10 @@ class ExpeditionTemplate(BoundDbModel, UUIDDateCreatedMixin, Base):
         Float(precision=2), server_default="0"
     )
 
+    mean_exp_lvl: Mapped[float] = mapped_column(
+        Float(precision=2), server_default="1"
+    )
+
     author_id: Mapped[int] = mapped_column(
         ForeignKey(get_User().id, ondelete="CASCADE"), index=True
     )

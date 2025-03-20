@@ -17,4 +17,10 @@ class HeroFilter(Filter):
 
     class Constants(Filter.Constants):
         model = Hero
-        search_model_fields = ["created_at", "name", "hero", "mana"]
+        search_model_fields = [
+            "created_at",
+            "name",
+            "hero_lvl",
+            "hero_class",
+            "mana",
+        ]

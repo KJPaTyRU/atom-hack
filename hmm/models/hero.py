@@ -16,3 +16,9 @@ class Hero(BoundDbModel, UUIDDateCreatedMixin, Base):
     @classmethod
     def bound_date_column(cls):
         return cls.created_at
+
+
+# class HeroInExp(Hero):
+#     complexity_lvl: Mapped[int] = mapped_column(SmallInteger())
+
+#     total_mana: Mapped[float] = mapped_column(Float(precision=2))

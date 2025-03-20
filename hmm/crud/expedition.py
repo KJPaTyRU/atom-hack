@@ -9,6 +9,7 @@ from hmm.enum import ExpeditionStatus
 from hmm.models.expedition import ExpeditionTemplate
 from hmm.crud.base import CRUDBase
 from hmm.models.tasks.group import TaskGroup
+from hmm.models.tasks.subtask_tasks import TypicalSubTask
 from hmm.schemas.expedition import (
     ExpeditionTemplateCreate,
     ExpeditionTemplateFrontRead,
@@ -35,7 +36,7 @@ def get_Heroes2Expedition() -> "Heroes2Expedition":
     return Heroes2Expedition
 
 
-def flatten_tasks(obj: ExpeditionTemplate):
+def flatten_tasks(obj: ExpeditionTemplate) -> list[TypicalSubTask]:
     ret = []
     for tgi in obj.tasks:
         ret.extend(tgi.sub_task)

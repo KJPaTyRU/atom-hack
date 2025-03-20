@@ -20,11 +20,21 @@ class Manas(OrmModel):
     s_mana: ManaFloatType = 0
 
 
+class ExpHeroe(OrmModel):
+    hero: HeroFrontRead
+    exp_k: float = 1
+
+
 class THeroe(OrmModel):
     id_: uuid.UUID
     ts: float = 0
     tabs: float = 0
-    v: float = 0
+    v1: float = 0
+
+    exp_k: float = 1
+
+    def v2(self) -> float:
+        return self.exp_k * self.v1
 
 
 class PickResult(OrmModel):
@@ -32,10 +42,10 @@ class PickResult(OrmModel):
     manas: Manas
 
 
-def group_by_class(heroes: list[HeroFrontRead], field: str):
+def group_by_class(heroes: list[ExpHeroe], field: str) -> dict[str, ExpHeroe]:
     res = defaultdict(list)
     for hi in heroes:
-        res[getattr(hi, field)].append(hi)
+        res[getattr(hi.hero, field)].append(hi)
     return res
 
 
@@ -49,13 +59,15 @@ def count_mana(tasks: list[TypicalSubTaskFrontRead]) -> Manas:
 
 
 def pick_heroes(
-    requested_mana: float, heroes: list[HeroFrontRead]
+    requested_mana: float, heroes: list[ExpHeroe]
 ) -> list[uuid.UUID]:
     _tdict: dict[uuid.UUID, THeroe] = dict()
     for hi in heroes:
-        ts = hi.mana - requested_mana
+        ts = hi.hero.mana - requested_mana
         tabs = abs(ts)
-        _tdict[hi.id] = THeroe(ts=ts, tabs=tabs, id_=hi.id, v=hi.mana)
+        _tdict[hi.hero.id] = THeroe(
+            ts=ts, tabs=tabs, id_=hi.hero.id, v1=hi.hero.mana, exp_k=hi.exp_k
+        )
     rmt = requested_mana
     res = []
     ttlist = list(_tdict.values())
@@ -63,11 +75,11 @@ def pick_heroes(
         ttlist = sorted(ttlist, key=lambda x: (x.tabs, x.ts), reverse=True)
         kd = ttlist.pop()
         res.append(kd.id_)
-        rmt -= kd.v
+        rmt -= kd.v2()
         if rmt <= 0:
             break
         for si in ttlist:
-            si.ts = si.v - rmt
+            si.ts = si.v2() - rmt
             si.tabs = abs(si.ts)
     if rmt <= 0:
         return res
@@ -75,7 +87,7 @@ def pick_heroes(
 
 
 def assign_heroes(
-    tasks: list[TypicalSubTaskFrontRead], heroes: list[HeroFrontRead]
+    tasks: list[TypicalSubTaskFrontRead], heroes: list[ExpHeroe]
 ):
     gheroes = group_by_class(heroes, "hero_class")
     manas = count_mana(tasks)
